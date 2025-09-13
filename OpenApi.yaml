@@ -1,0 +1,225 @@
+ openapi: 3.0.1
+info:
+  title: Pet Store API
+  description: API for managing pet selling operations
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/store
+    description: Store server
+  - url: http://localhost:8081/cats
+    description: Cats server
+tags:
+  - name: Stote
+    description: Access to Petstore
+  - name: Cats
+    description: Access to the Cats
+
+paths:
+  /make-a-sell:
+    post:
+      tags:
+      - Store
+      summary: Make a new sell
+      servers:
+        - url: http://localhost:8080/store
+      description: Endpoint to add a new sale to the database.
+      operationId: makeASell
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellingDto'
+      responses:
+        '200':
+          description: Sell successfully made
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Selling is done
+        '500':
+          description: Server error
+
+  /all-deals:
+    get:
+      tags:
+      - Store
+      summary: Retrieve all sales
+      servers:
+        - url: http://localhost:8080/store
+      description: Fetch the list of all past sales.
+      operationId: getSelling
+      responses:
+        '200':
+          description: A list of all sales
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Selling'
+        '500':
+          description: Server error
+
+  /pets:
+    get:
+      tags:
+      - Store
+      summary: Fetch all pets
+      servers:
+        - url: http://localhost:8080/store
+      description: Endpoint to fetch pets from an external service.
+      operationId: getPets
+      responses:
+        '200':
+          description: A list of pets retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Server error
+          
+  /save:
+    post:
+      tags:
+      - Cats
+      summary: Save a new cat
+      servers:
+        - url: http://localhost:8081/cats
+      operationId: saveCat
+      description: Creates and saves a new cat based on the provided `catDto`
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/catDto'
+      responses:
+        200:
+          description: Successfully saved the cat
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Saved
+        500:
+          description: Internal Server Error
+          
+  /all:
+    get:
+      tags:
+      - Cats
+      summary: Get all cats
+      servers:
+        - url: http://localhost:8081/cats
+      operationId: getAllCats
+      description: Retrieves a list of all saved cats
+      responses:
+        200:
+          description: A list of cats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cat'
+        500:
+          description: Internal Server Error
+          
+  /{id}:
+    get:
+      tags:
+      - Cats
+      summary: Get a specific cat by ID
+      servers:
+        - url: http://localhost:8081/cats
+      operationId: getCatById
+      description: Retrieves detailed information about a specific cat
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the cat to retrieve
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Cat details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+        404:
+          description: Cat not found
+        500:
+          description: Internal Server Error
+
+components:
+  schemas:
+    SellingDto:
+      type: object
+      properties:
+        petId:
+          type: integer
+          example: 1
+        customerName:
+          type: string
+          example: Jane Doe
+        price:
+          type: integer
+          example: 100
+      required:
+      - petId
+      - customerName
+      - price
+    Selling:
+      type: object
+      properties:
+        sellingId:
+          type: integer
+          example: 10
+        petId:
+          type: integer
+          example: 1
+        customerName:
+          type: string
+          example: Jane Doe
+        price:
+          type: integer
+          example: 100
+      required:
+      - sellingId
+      - petId
+      - customerName
+      - price
+    catDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Whiskers
+        color:
+          type: string
+          example: Brown
+        age:
+          type: integer
+          example: 3
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Whiskers
+        color:
+          type: string
+          example: Brown
+        age:
+          type: integer
+          example: 3
