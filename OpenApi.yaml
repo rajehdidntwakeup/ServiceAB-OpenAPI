@@ -9,7 +9,7 @@ servers:
   - url: http://localhost:8081/cats
     description: Cats server
 tags:
-  - name: Stote
+  - name: Store
     description: Access to Petstore
   - name: Cats
     description: Access to the Cats
