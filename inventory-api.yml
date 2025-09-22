@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: |
     The **Inventory Service API** manages pictures in an inventory system.  
-    It allows clientsor other services to create, update, retrieve a single picture, or retrieve all pictures.  
+    It allows clients or other services to create, update, retrieve a single picture, or retrieve all pictures.  
 
 tags:
   - name: Inventory
