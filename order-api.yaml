@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: Order service API
+  version: 1.0.0
+  description: |
+    The **Order Service API** allows clients or other services to manage orders in the system.  
+    Functionality includes creating new orders, retrieving an order by ID, retrieving all orders, and updating existing orders.  
+    Each order contains multiple `OrderItem` and is linked to customer details (`Contact`).
+
+tags:
+  - name: Order
+    description: Endpoints for managing orders
+
+servers:
+  - url: http://localhost:8081/order
+    description: Local development server (for testing purposes)
+
+paths:
+  /save:
+    post:
+      tags:
+        - Order
+      summary: Save a new order
+      description: |
+        Creates a new order in the system using `OrderDto`.  
+        The order will contain a list of items and customer contact details.  
+        Returns the newly created order with a generated `orderId`.
+      requestBody:
+        required: true
+        description: Data required to create a new order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDto'
+            example:
+              orderItems:
+                - itemEAN: "1234567890123"
+                  amount: 2
+                  itemPrice: 49.99
+                - itemEAN: "9876543210987"
+                  amount: 1
+                  itemPrice: 99.99
+              contactDto:
+                customerName: "Alice Johnson"
+                street: "Orderstrasse 5/6"
+                zip: "1010"
+                city: "Vienna"
+                country: "Austria"
+                email: "alice.johnson@example.com"
+      responses:
+        '200':
+          description: Order successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        '400':
+          description: Missing or invalid parameter in the request body
+        '500':
+          description: Internal server error
+
+  /{id}:
+    get:
+      tags:
+        - Order
+      summary: Get an order by ID
+      description: |
+        Retrieves a single order by its unique identifier (`orderId`).  
+        Returns the complete order details including items and customer information.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the order
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Order found and returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        '400':
+          description: Missing or invalid `id` parameter
+        '404':
+          description: Order with the given ID was not found
+        '500':
+          description: Internal server error
+
+  /all:
+    get:
+      tags:
+        - Order
+      summary: Get all orders
+      description: |
+        Retrieves all orders currently stored in the system.  
+        Each order includes details about items and customer contact information.
+      responses:
+        '200':
+          description: Successfully returned all orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orders'
+        '500':
+          description: Internal server error
+
+  /update/{id}:
+    put:
+      tags:
+        - Order
+      summary: Update an existing order
+      description: |
+        Updates an existing order identified by `id` using `OrderDto`.  
+        The full updated order details will be returned.  
+        Only valid order IDs can be updated.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the order to update
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        description: Updated order details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDto'
+            example:
+              orderItems:
+                - itemEAN: "1234567890123"
+                  amount: 3
+                  itemPrice: 49.99
+              contactDto:
+                customerName: "Alice Johnson"
+                street: "Orderstrasse 5/6"
+                zip: "1010"
+                city: "Vienna"
+                country: "Austria"
+                email: "alice.johnson@example.com"
+      responses:
+        '200':
+          description: Order successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        '400':
+          description: Missing or invalid `id` parameter
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Orders:
+      type: object
+      description: Represents an order stored in the system.
+      required:
+        - orderId
+        - totalPrice
+        - orderDate
+        - orderItems
+        - address
+      properties:
+        orderId:
+          type: integer
+          description: Unique identifier of the order
+          example: 1
+        totalPrice:
+          type: number
+          format: double
+          description: Total price of the order
+          example: 199.99
+        orderDate:
+          type: string
+          format: localdate
+          description: Date when the order was placed
+          example: "2025.09.22"
+        orderItems:
+          type: array
+          description: List of items included in the order
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        address:
+          $ref: '#/components/schemas/Contact'
+
+    OrderItem:
+      type: object
+      description: Represents a single item included in an order.
+      required:
+        - orderItemId
+        - itemEAN
+        - amount
+        - itemPrice
+      properties:
+        orderItemId:
+          type: integer
+          description: Unique identifier of the order item
+          example: 2
+        itemEAN:
+          type: string
+          description: EAN code of the item
+          example: "1234567890123"
+        amount:
+          type: integer
+          description: Quantity of the item in the order
+          example: 2
+        itemPrice:
+          type: number
+          format: double
+          description: Price per unit of the item
+          example: 49.99
+
+    Contact:
+      type: object
+      description: Represents the customer contact information stored with the order.
+      required:
+        - contactId
+        - customerName
+        - street
+        - zip
+        - city
+        - country
+        - email
+      properties:
+        contactId:
+          type: integer
+          description: Unique identifier of the contact
+          example: 3
+        customerName:
+          type: string
+          description: Full name of the customer
+          example: "Jane Doe"
+        street:
+          type: string
+          description: Street address
+          example: "Nicestrasse 37/1"
+        zip:
+          type: string
+          description: ZIP or postal code
+          example: "1030"
+        city:
+          type: string
+          description: City of residence
+          example: "Vienna"
+        country:
+          type: string
+          description: Country of residence
+          example: "Austria"
+        email:
+          type: string
+          format: email
+          description: Email address of the customer
+          example: "jane.doe@example.com"
+
+    OrderDto:
+      type: object
+      description: Data transfer object used to create or update an order.
+      required:
+        - orderItems
+        - contactDto
+      properties:
+        orderItems:
+          type: array
+          description: List of items included in the order
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        contactDto:
+          $ref: '#/components/schemas/ContactDto'
+
+    ContactDto:
+      type: object
+      description: Customer contact information provided when creating/updating an order (no `contactId`).
+      required:
+        - customerName
+        - street
+        - zip
+        - city
+        - country
+        - email
+      properties:
+        customerName:
+          type: string
+          description: Full name of the customer
+          example: "John Smith"
+        street:
+          type: string
+          description: Street address
+          example: "Goodstrasse 6/1"
+        zip:
+          type: string
+          description: ZIP or postal code
+          example: "1020"
+        city:
+          type: string
+          description: City of residence
+          example: "Vienna"
+        country:
+          type: string
+          description: Country of residence
+          example: "Austria"
+        email:
+          type: string
+          format: email
+          description: Email address of the customer
+          example: "john.smith@example.com"
