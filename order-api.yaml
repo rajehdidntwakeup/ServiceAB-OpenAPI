@@ -12,7 +12,7 @@ tags:
     description: Endpoints for managing orders
 
 servers:
-  - url: http://localhost:8081/order
+  - url: http://localhost:8081/order/api
     description: Local development server (for testing purposes)
 
 paths:
@@ -23,7 +23,8 @@ paths:
       summary: Save a new order
       description: |
         Creates a new order in the system using `OrderDto`.  
-        The order will contain a list of items and customer contact details.  
+        The order will contain a list of items and customer contact details.
+        The item count must be greater than 0.
         Returns the newly created order with a generated `orderId`.
       requestBody:
         required: true
@@ -153,7 +154,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Orders'
         '400':
-          description: Missing or invalid `id` parameter
+          description: Missing or invalid `id` parameter, or invalid request body
         '404':
           description: Order not found
         '500':
@@ -212,7 +213,8 @@ components:
           example: "1234567890123"
         amount:
           type: integer
-          description: Quantity of the item in the order
+          description: Quantity of the item in the order, it must be greater than 0, and the requested amount must NOT exceed the available stock.
+
           example: 2
         itemPrice:
           type: number
