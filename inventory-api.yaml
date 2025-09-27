@@ -22,7 +22,7 @@ paths:
       summary: Save a new picture
       description: |
         Creates a new picture in the inventory.  
-        Requires a `Picture` object in the request body with a unique `EAN`.  
+        Requires a `PictureDto` object in the request body with a unique `id`.  
         Returns the newly saved picture.
       requestBody:
         required: true
@@ -30,32 +30,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Picture'
+              $ref: '#/components/schemas/PictureDto'
       responses:
-        '200':
-          description: Picture successfully saved
+        '201':
+          description: Picture successfully created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Picture'
         '400':
-          description: Missing or invalid parameter in the request body, or already saved `EAN`
+          description: Missing or invalid parameter in the request body
         '500':
           description: Internal server error
 
-  /{ean}:
+  /{id}:
     get:
       tags:
         - Inventory
-      summary: Get a picture by unique identifier (EAN)
+      summary: Get a picture by unique identifier (`id`)
       description: |
-        Retrieves a single picture by its unique identifier (`EAN`).  
+        Retrieves a single picture by its unique identifier (`id`).  
         Returns the picture object if found.
       parameters:
-        - name: ean
+        - name: id
           in: path
           required: true
-          description: The unique identifier `EAN` of the picture
+          description: The unique identifier of the picture
           schema:
             type: string
       responses:
@@ -66,9 +66,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Picture'
         '400':
-          description: Missing or invalid `EAN` parameter
+          description: Missing or invalid `id` parameter
         '404':
-          description: Picture with the given `EAN` was not found
+          description: Picture with the given `id` was not found
         '500':
           description: Internal server error
 
@@ -92,20 +92,20 @@ paths:
         '500':
           description: Internal server error
 
-  /update/{ean}:
+  /update/{id}:
     put:
       tags:
         - Inventory
       summary: Update an existing picture
       description: |
-        Updates an existing picture in the inventory using its unique identifier (`EAN`).  
-        Requires both the path parameter and a valid `Picture` in the request body.  
+        Updates an existing picture in the inventory using its unique identifier (`id`).  
+        Requires both the path parameter and a valid `PictureDto` in the request body.  
         Returns the updated picture.
       parameters:
-        - name: ean
+        - name: id
           in: path
           required: true
-          description: The unique identifier `EAN` of the picture to update
+          description: The unique identifier `id` of the picture to update
           schema:
             type: string
       requestBody:
@@ -114,7 +114,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Picture'
+              $ref: '#/components/schemas/PictureDto'
       responses:
         '200':
           description: Picture successfully updated
@@ -123,38 +123,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/Picture'
         '400':
-          description: Missing or invalid `EAN` parameter, or already saved `EAN`, or invalid body request
+          description: Invalid body request
         '404':
-          description: Picture not found with the given `EAN`
+          description: Picture not found with the given `id`
         '500':
           description: Internal server error
 
 components:
   schemas:
+    PictureDto:
+      type: object
+      description: |
+        Represents a stored picture in the inventory, including its unique identifier and full details.
+      required:
+        - name
+        - stock
+        - price
+        - description
+      properties:
+        name:
+          type: string
+          description: Title of the picture
+          example: "Sunset over the mountains"
+        stock:
+          type: integer
+          description: Number of units available in stock, it must be 0 or greater.
+          example: 15
+        price:
+          type: number
+          format: double
+          description: Price of the picture. It must NOT have a negative value.
+          example: 49.99
+        description:
+          type: string
+          description: Detailed description of the picture
+          example: "A beautiful high-resolution photograph of a sunset over the mountain range."
     Picture:
       type: object
       description: |
         Represents a stored picture in the inventory, including its unique identifier and full details.
       required:
-        - ean
-        - title
-        - size
+        - id
+        - name
         - stock
         - price
         - description
       properties:
-        ean:
-          type: string
-          description: Unique identifier for the picture (`EAN` code)
-          example: "1234567890123"
-        title:
+        id:
+          type: integer
+          description: Unique identifier for the picture
+          example: 1
+        name:
           type: string
           description: Title of the picture
           example: "Sunset over the mountains"
-        size:
-          type: string
-          description: Size of the picture (e.g., dimensions, file size, or format)
-          example: "1920x1080"
         stock:
           type: integer
           description: Number of units available in stock, it must be 0 or greater.

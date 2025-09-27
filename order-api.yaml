@@ -5,7 +5,7 @@ info:
   description: |
     The **Order Service API** allows clients or other services to manage orders in the system.  
     Functionality includes creating new orders, retrieving an order by ID, retrieving all orders, and updating existing orders.  
-    Each order contains multiple `OrderItem` and is linked to customer details (`Contact`).
+    Each order contains multiple `OrderItem`.
 
 tags:
   - name: Order
@@ -35,22 +35,15 @@ paths:
               $ref: '#/components/schemas/OrderDto'
             example:
               orderItems:
-                - itemEAN: "1234567890123"
+                - itemId: 1
                   amount: 2
                   itemPrice: 49.99
-                - itemEAN: "9876543210987"
+                - itemId: 2
                   amount: 1
                   itemPrice: 99.99
-              contactDto:
-                customerName: "Alice Johnson"
-                street: "Orderstrasse 5/6"
-                zip: "1010"
-                city: "Vienna"
-                country: "Austria"
-                email: "alice.johnson@example.com"
       responses:
-        '200':
-          description: Order successfully saved
+        '201':
+          description: Order successfully created
           content:
             application/json:
               schema:
@@ -136,16 +129,9 @@ paths:
               $ref: '#/components/schemas/OrderDto'
             example:
               orderItems:
-                - itemEAN: "1234567890123"
+                - itemId: "1234567890123"
                   amount: 3
                   itemPrice: 49.99
-              contactDto:
-                customerName: "Alice Johnson"
-                street: "Orderstrasse 5/6"
-                zip: "1010"
-                city: "Vienna"
-                country: "Austria"
-                email: "alice.johnson@example.com"
       responses:
         '200':
           description: Order successfully updated
@@ -168,9 +154,9 @@ components:
       required:
         - orderId
         - totalPrice
-        - orderDate
+        - status
+        - creatationDate
         - orderItems
-        - address
       properties:
         orderId:
           type: integer
@@ -181,7 +167,11 @@ components:
           format: double
           description: Total price of the order
           example: 199.99
-        orderDate:
+        status:
+          type: string
+          description: the order status (CONFIRMED, SHIPPED, CANCELLD)
+          example: "CONFIRMED"
+        creatationDate:
           type: string
           format: localdate
           description: Date when the order was placed
@@ -191,15 +181,13 @@ components:
           description: List of items included in the order
           items:
             $ref: '#/components/schemas/OrderItem'
-        address:
-          $ref: '#/components/schemas/Contact'
 
     OrderItem:
       type: object
       description: Represents a single item included in an order.
       required:
         - orderItemId
-        - itemEAN
+        - itemId
         - amount
         - itemPrice
       properties:
@@ -207,14 +195,13 @@ components:
           type: integer
           description: Unique identifier of the order item
           example: 2
-        itemEAN:
-          type: string
-          description: EAN code of the item
-          example: "1234567890123"
+        itemId:
+          type: integer
+          description: EUnique identifier of the item
+          example: 1
         amount:
           type: integer
           description: Quantity of the item in the order, it must be greater than 0, and the requested amount must NOT exceed the available stock.
-
           example: 2
         itemPrice:
           type: number
@@ -222,96 +209,16 @@ components:
           description: Price per unit of the item
           example: 49.99
 
-    Contact:
-      type: object
-      description: Represents the customer contact information stored with the order.
-      required:
-        - contactId
-        - customerName
-        - street
-        - zip
-        - city
-        - country
-        - email
-      properties:
-        contactId:
-          type: integer
-          description: Unique identifier of the contact
-          example: 3
-        customerName:
-          type: string
-          description: Full name of the customer
-          example: "Jane Doe"
-        street:
-          type: string
-          description: Street address
-          example: "Nicestrasse 37/1"
-        zip:
-          type: string
-          description: ZIP or postal code
-          example: "1030"
-        city:
-          type: string
-          description: City of residence
-          example: "Vienna"
-        country:
-          type: string
-          description: Country of residence
-          example: "Austria"
-        email:
-          type: string
-          format: email
-          description: Email address of the customer
-          example: "jane.doe@example.com"
-
     OrderDto:
       type: object
       description: Data transfer object used to create or update an order.
       required:
         - orderItems
-        - contactDto
       properties:
         orderItems:
           type: array
           description: List of items included in the order
           items:
             $ref: '#/components/schemas/OrderItem'
-        contactDto:
-          $ref: '#/components/schemas/ContactDto'
 
-    ContactDto:
-      type: object
-      description: Customer contact information provided when creating/updating an order (no `contactId`).
-      required:
-        - customerName
-        - street
-        - zip
-        - city
-        - country
-        - email
-      properties:
-        customerName:
-          type: string
-          description: Full name of the customer
-          example: "John Smith"
-        street:
-          type: string
-          description: Street address
-          example: "Goodstrasse 6/1"
-        zip:
-          type: string
-          description: ZIP or postal code
-          example: "1020"
-        city:
-          type: string
-          description: City of residence
-          example: "Vienna"
-        country:
-          type: string
-          description: Country of residence
-          example: "Austria"
-        email:
-          type: string
-          format: email
-          description: Email address of the customer
-          example: "john.smith@example.com"
+
