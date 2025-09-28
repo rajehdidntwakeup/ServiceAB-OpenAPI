@@ -22,7 +22,7 @@ paths:
       summary: Save a new picture
       description: |
         Creates a new picture in the inventory.  
-        Requires a `PictureDto` object in the request body with a unique `id`.  
+        Requires a `PictureDto` object in the request body.  
         Returns the newly saved picture.
       requestBody:
         required: true
@@ -123,7 +123,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Picture'
         '400':
-          description: Invalid body request
+          description: Invalid request body
         '404':
           description: Picture not found with the given `id`
         '500':
@@ -134,7 +134,7 @@ components:
     PictureDto:
       type: object
       description: |
-        Represents a stored picture in the inventory, including its unique identifier and full details.
+        Represents a picture object, without its unique identifier.
       required:
         - name
         - stock
