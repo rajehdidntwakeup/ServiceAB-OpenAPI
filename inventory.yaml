@@ -1,10 +1,12 @@
+---
 openapi: 3.0.3
 info:
   title: Inventory service API
   version: 1.0.0
   description: |
-    The **Inventory Service API** manages pictures in an inventory system.  
-    It allows clients or other services to create, update, retrieve a single picture, or retrieve all pictures.  
+    The **Inventory Service API** manages pictures in an inventory system.
+    It allows clients or other services to create, update,
+    retrieve a single picture, or retrieve all pictures.
 
 tags:
   - name: Inventory
@@ -17,12 +19,13 @@ servers:
 paths:
   /inventory:
     post:
+      operationId: createPicture
       tags:
         - Inventory
       summary: Save a new picture
       description: |
-        Creates a new picture in the inventory.  
-        Requires a `PictureDto` object in the request body.  
+        Creates a new picture in the inventory.
+        Requires a `PictureDto` object in the request body.
         Returns the newly saved picture.
       requestBody:
         required: true
@@ -44,11 +47,12 @@ paths:
           description: Internal server error
 
     get:
+      operationId: getAllPictures
       tags:
         - Inventory
       summary: Get all pictures
       description: |
-        Retrieves a list of all pictures currently stored in the inventory.  
+        Retrieves a list of all pictures currently stored in the inventory.
         Returns a List of picture objects.
       responses:
         '200':
@@ -63,11 +67,12 @@ paths:
           description: Internal server error
   /inventory/{id}:
     get:
+      operationId: getPictureById
       tags:
         - Inventory
       summary: Get a picture by unique identifier (`id`)
       description: |
-        Retrieves a single picture by its unique identifier (`id`).  
+        Retrieves a single picture by its unique identifier (`id`).
         Returns the picture object if found.
       parameters:
         - name: id
@@ -89,14 +94,16 @@ paths:
           description: Picture with the given `id` was not found
         '500':
           description: Internal server error
-
     put:
+      operationId: updatePictureById
       tags:
         - Inventory
       summary: Update an existing picture
       description: |
-        Updates an existing picture in the inventory using its unique identifier (`id`).  
-        Requires both the path parameter and a valid `PictureDto` in the request body.  
+        Updates an existing picture in the inventory
+        using its unique identifier (`id`).
+        Requires both the path parameter and a valid
+        `PictureDto` in the request body.
         Returns the updated picture.
       parameters:
         - name: id
@@ -144,7 +151,8 @@ components:
           example: "Sunset over the mountains"
         stock:
           type: integer
-          description: Number of units available in stock, it must be 0 or greater.
+          description: |
+            Number of units available in stock, it must be 0 or greater.
           example: 15
         price:
           type: number
@@ -154,11 +162,12 @@ components:
         description:
           type: string
           description: Detailed description of the picture
-          example: "A beautiful high-resolution photograph of a sunset over the mountain range."
+          example: "A beautiful high-resolution photograph."
     Picture:
       type: object
       description: |
-        Represents a stored picture in the inventory, including its unique identifier and full details.
+        Represents a stored picture in the inventory,
+        including its unique identifier and full details.
       required:
         - id
         - name
@@ -176,15 +185,16 @@ components:
           example: "Sunset over the mountains"
         stock:
           type: integer
-          description: Number of units available in stock, it must be 0 or greater.
+          description: |
+            Number of units available in stock, it must be 0 or greater.
           example: 15
         price:
           type: number
           format: double
-          description: Price of the picture. It must NOT have a negative value.
+          description: |
+            Price of the picture. It must NOT have a negative value.
           example: 49.99
         description:
           type: string
           description: Detailed description of the picture
-          example: "A beautiful high-resolution photograph of a sunset over the mountain range."
-
+          example: "A beautiful high-resolution photograph."
