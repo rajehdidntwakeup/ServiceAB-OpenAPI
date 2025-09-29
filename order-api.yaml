@@ -12,11 +12,11 @@ tags:
     description: Endpoints for managing orders
 
 servers:
-  - url: http://localhost:8081/order/api
+  - url: http://localhost:8081/api
     description: Local development server (for testing purposes)
 
 paths:
-  /save:
+  /order:
     post:
       tags:
         - Order
@@ -25,7 +25,7 @@ paths:
         Creates a new order in the system using `OrderDto`.  
         The order will contain a list of items and customer contact details.
         The item count must be greater than 0.
-        Returns the newly created order with a generated `orderId`.
+        Returns the newly created order with a generated `Id`.
       requestBody:
         required: true
         description: Data required to create a new order
@@ -33,16 +33,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OrderDto'
-            example:
-              totalPrice: 149.98
-              status: "CONFIRMED"
-              orderItems:
-                - itemId: 1
-                  amount: 2
-                  itemPrice: 49.99
-                - itemId: 2
-                  amount: 1
-                  itemPrice: 99.99
       responses:
         '201':
           description: Order successfully created
@@ -54,14 +44,32 @@ paths:
           description: Missing or invalid parameter in the request body
         '500':
           description: Internal server error
+    get:
+      tags:
+        - Order
+      summary: Get all orders
+      description: |
+        Retrieves all orders currently stored in the system.  
+        Each order includes details about items and customer contact information.
+      responses:
+        '200':
+          description: Successfully returned all orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orders'
+        '500':
+          description: Internal server error
 
-  /{id}:
+  /order/{id}:
     get:
       tags:
         - Order
       summary: Get an order by ID
       description: |
-        Retrieves a single order by its unique identifier (`orderId`).  
+        Retrieves a single order by its unique identifier (`id`).  
         Returns the complete order details including items and customer information.
       parameters:
         - name: id
@@ -84,28 +92,6 @@ paths:
           description: Order with the given ID was not found
         '500':
           description: Internal server error
-
-  /all:
-    get:
-      tags:
-        - Order
-      summary: Get all orders
-      description: |
-        Retrieves all orders currently stored in the system.  
-        Each order includes details about items and customer contact information.
-      responses:
-        '200':
-          description: Successfully returned all orders
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Orders'
-        '500':
-          description: Internal server error
-
-  /update/{id}:
     put:
       tags:
         - Order
@@ -129,13 +115,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OrderDto'
-            example:
-              totalPrice: 149.97
-              status: "CONFIRMED"
-              orderItems:
-                - itemId: 1
-                  amount: 3
-                  itemPrice: 49.99
       responses:
         '200':
           description: Order successfully updated
@@ -156,13 +135,12 @@ components:
       type: object
       description: Represents an order stored in the system.
       required:
-        - orderId
+        - id
         - totalPrice
         - status
-        - creationDate
-        - orderItems
+        - items
       properties:
-        orderId:
+        id:
           type: integer
           description: Unique identifier of the order
           example: 1
@@ -170,17 +148,13 @@ components:
           type: number
           format: double
           description: Total price of the order
-          example: 199.99
+          example: 99.98
         status:
           type: string
+          enum: [CONFIRMED, SHIPPED, CANCELLED]
           description: the order status (CONFIRMED, SHIPPED, CANCELLED)
           example: "CONFIRMED"
-        creationDate:
-          type: string
-          format: localdate
-          description: Date when the order was placed
-          example: "2025.09.22"
-        orderItems:
+        items:
           type: array
           description: List of items included in the order
           items:
@@ -190,24 +164,24 @@ components:
       type: object
       description: Represents a single item included in an order.
       required:
-        - orderItemId
+        - id
         - itemId
-        - amount
-        - itemPrice
+        - quantity
+        - price
       properties:
-        orderItemId:
+        id:
           type: integer
           description: Unique identifier of the order item
           example: 2
         itemId:
           type: integer
-          description: EUnique identifier of the item
+          description: Unique identifier of the item
           example: 1
-        amount:
+        quantity:
           type: integer
-          description: Quantity of the item in the order, it must be greater than 0, and the requested amount must NOT exceed the available stock.
+          description: Quantity of the item in the order, it must be greater than 0, and the requested quantity must NOT exceed the available stock.
           example: 2
-        itemPrice:
+        price:
           type: number
           format: double
           description: Price per unit of the item
@@ -219,19 +193,41 @@ components:
       required:
         - totalPrice
         - status
-        - orderItems
+        - items
       properties:
         totalPrice:
           type: number
           format: double
           description: Total price of the order
-          example: 199.99
+          example: 99.98
         status:
           type: string
+          enum: [CONFIRMED, SHIPPED, CANCELLED]
           description: the order status (CONFIRMED, SHIPPED, CANCELLED)
-          example: "CONFIRMED"
-        orderItems:
+          example: CONFIRMED
+        items:
           type: array
           description: List of items included in the order
           items:
-            $ref: '#/components/schemas/OrderItem'
+            $ref: '#/components/schemas/OrderItemDto'
+    OrderItemDto:
+      type: object
+      description: Represents a single item included in an order.
+      required:
+        - itemId
+        - quantity
+        - price
+      properties:
+        itemId:
+          type: integer
+          description: Unique identifier of the item
+          example: 1
+        quantity:
+          type: integer
+          description: Quantity of the item in the order, it must be greater than 0, and the requested quantity must NOT exceed the available stock.
+          example: 2
+        price:
+          type: number
+          format: double
+          description: Price per unit of the item
+          example: 49.99
