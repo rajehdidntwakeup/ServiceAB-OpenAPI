@@ -11,11 +11,11 @@ tags:
     description: Endpoints for managing inventory pictures
 
 servers:
-  - url: http://localhost:8080/inventory/api
+  - url: http://localhost:8080/api
     description: Local development server (for testing purposes)
 
 paths:
-  /save:
+  /inventory:
     post:
       tags:
         - Inventory
@@ -43,7 +43,25 @@ paths:
         '500':
           description: Internal server error
 
-  /{id}:
+    get:
+      tags:
+        - Inventory
+      summary: Get all pictures
+      description: |
+        Retrieves a list of all pictures currently stored in the inventory.  
+        Returns a List of picture objects.
+      responses:
+        '200':
+          description: Successfully returned all pictures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Picture'
+        '500':
+          description: Internal server error
+  /inventory/{id}:
     get:
       tags:
         - Inventory
@@ -72,27 +90,6 @@ paths:
         '500':
           description: Internal server error
 
-  /all:
-    get:
-      tags:
-        - Inventory
-      summary: Get all pictures
-      description: |
-        Retrieves a list of all pictures currently stored in the inventory.  
-        Returns a List of picture objects.
-      responses:
-        '200':
-          description: Successfully returned all pictures
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Picture'
-        '500':
-          description: Internal server error
-
-  /update/{id}:
     put:
       tags:
         - Inventory
