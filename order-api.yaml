@@ -159,7 +159,6 @@ components:
         - orderId
         - totalPrice
         - status
-        - creationDate
         - orderItems
       properties:
         orderId:
@@ -175,11 +174,6 @@ components:
           type: string
           description: the order status (CONFIRMED, SHIPPED, CANCELLED)
           example: "CONFIRMED"
-        creationDate:
-          type: string
-          format: localdate
-          description: Date when the order was placed
-          example: "2025.09.22"
         orderItems:
           type: array
           description: List of items included in the order
