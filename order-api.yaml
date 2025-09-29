@@ -33,16 +33,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OrderDto'
-            example:
-              totalPrice: 149.98
-              status: "CONFIRMED"
-              items:
-                - itemId: 1
-                  quantity: 2
-                  price: 49.99
-                - itemId: 2
-                  quantity: 1
-                  price: 99.99
       responses:
         '201':
           description: Order successfully created
@@ -125,13 +115,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OrderDto'
-            example:
-              totalPrice: 149.97
-              status: "CONFIRMED"
-              items:
-                - itemId: 1
-                  quantity: 3
-                  price: 49.99
       responses:
         '200':
           description: Order successfully updated
@@ -165,9 +148,10 @@ components:
           type: number
           format: double
           description: Total price of the order
-          example: 199.99
+          example: 99.98
         status:
           type: string
+          enum: [CONFIRMED, SHIPPED, CANCELLED]
           description: the order status (CONFIRMED, SHIPPED, CANCELLED)
           example: "CONFIRMED"
         items:
@@ -215,11 +199,11 @@ components:
           type: number
           format: double
           description: Total price of the order
-          example: 199.99
+          example: 99.98
         status:
           type: string
           enum: [CONFIRMED, SHIPPED, CANCELLED]
-          description: the order status
+          description: the order status (CONFIRMED, SHIPPED, CANCELLED)
           example: CONFIRMED
         items:
           type: array
