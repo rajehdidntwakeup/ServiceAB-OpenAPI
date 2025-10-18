@@ -10,7 +10,7 @@ info:
 
 tags:
   - name: Inventory
-    description: Endpoints for managing inventory pictures
+    description: Endpoints for managing inventory pictures.
 
 servers:
   - url: http://localhost:8080/api
