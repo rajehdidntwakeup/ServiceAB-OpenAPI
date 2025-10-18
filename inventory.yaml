@@ -54,6 +54,16 @@ paths:
       description: |
         Retrieves a list of all pictures currently stored in the inventory.
         Returns a List of picture objects.
+      parameters:
+        - name: multi-catalog
+          in: query
+          required: false
+          description: |
+            Whether to retrieve pictures from multiple catalogs.
+            Defaults to `false`.
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Successfully returned all pictures
