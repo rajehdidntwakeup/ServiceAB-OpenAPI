@@ -10,7 +10,7 @@ info:
 
 tags:
   - name: Inventory
-    description: Endpoints for managing inventory pictures
+    description: Endpoints for managing inventory pictures.
 
 servers:
   - url: http://localhost:8080/api
@@ -47,13 +47,23 @@ paths:
           description: Internal server error
 
     get:
-      operationId: getAllPictures
+      operationId: getAll
       tags:
         - Inventory
-      summary: Get all pictures
+      summary: Get all items
       description: |
-        Retrieves a list of all pictures currently stored in the inventory.
-        Returns a List of picture objects.
+        Retrieves a list of all items currently stored in the inventory(s).
+        Returns a List of item objects.
+      parameters:
+        - name: multi-catalog
+          in: query
+          required: false
+          description: |
+            Whether to retrieve pictures from multiple catalogs.
+            Defaults to `false`.
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Successfully returned all pictures
