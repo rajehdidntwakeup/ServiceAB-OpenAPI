@@ -4,13 +4,13 @@ info:
   title: Inventory service API
   version: 1.0.0
   description: |
-    The **Inventory Service API** manages items in an inventory system.
+    The **Inventory Service API** manages pictures in an inventory system.
     It allows clients or other services to create, update,
-    retrieve a single item, or retrieve all items.
+    retrieve a single picture, or retrieve all pictures.
 
 tags:
   - name: Inventory
-    description: Endpoints for managing inventory items.
+    description: Endpoints for managing inventory pictures
 
 servers:
   - url: http://localhost:8080/api
@@ -19,28 +19,28 @@ servers:
 paths:
   /inventory:
     post:
-      operationId: createItem
+      operationId: createPicture
       tags:
         - Inventory
-      summary: Save a new item
+      summary: Save a new picture
       description: |
-        Creates a new Item in the inventory.
-        Requires a `ItemDto` object in the request body.
-        Returns the newly saved item.
+        Creates a new picture in the inventory.
+        Requires a `PictureDto` object in the request body.
+        Returns the newly saved picture.
       requestBody:
         required: true
-        description: Item data to be created
+        description: Picture data to be created
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ItemDto'
+              $ref: '#/components/schemas/PictureDto'
       responses:
         '201':
-          description: Item successfully created
+          description: Picture successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/Picture'
         '400':
           description: Missing or invalid parameter in the request body
         '500':
@@ -59,96 +59,96 @@ paths:
           in: query
           required: false
           description: |
-            Whether to retrieve items from multiple catalogs.
+            Whether to retrieve pictures from multiple catalogs.
             Defaults to `false`.
           schema:
             type: boolean
             default: false
       responses:
         '200':
-          description: Successfully returned all items
+          description: Successfully returned all pictures
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Item'
+                  $ref: '#/components/schemas/Picture'
         '500':
           description: Internal server error
   /inventory/{id}:
     get:
-      operationId: getItemById
+      operationId: getPictureById
       tags:
         - Inventory
-      summary: Get a item by unique identifier (`id`)
+      summary: Get a picture by unique identifier (`id`)
       description: |
-        Retrieves a single item by its unique identifier (`id`).
-        Returns the item object if found.
+        Retrieves a single picture by its unique identifier (`id`).
+        Returns the picture object if found.
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the item
+          description: The unique identifier of the picture
           schema:
             type: string
       responses:
         '200':
-          description: Item found and returned
+          description: Picture found and returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/Picture'
         '400':
           description: Missing or invalid `id` parameter
         '404':
-          description: Item with the given `id` was not found
+          description: Picture with the given `id` was not found
         '500':
           description: Internal server error
     put:
-      operationId: updateItemById
+      operationId: updatePictureById
       tags:
         - Inventory
-      summary: Update an existing item
+      summary: Update an existing picture
       description: |
-        Updates an existing item in the inventory
+        Updates an existing picture in the inventory
         using its unique identifier (`id`).
         Requires both the path parameter and a valid
-        `ItemDto` in the request body.
-        Returns the updated item.
+        `PictureDto` in the request body.
+        Returns the updated picture.
       parameters:
         - name: id
           in: path
           required: true
-          description: The unique identifier `id` of the item to update
+          description: The unique identifier `id` of the picture to update
           schema:
             type: string
       requestBody:
         required: true
-        description: Updated item data
+        description: Updated picture data
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ItemDto'
+              $ref: '#/components/schemas/PictureDto'
       responses:
         '200':
-          description: Item successfully updated
+          description: Picture successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/Picture'
         '400':
           description: Invalid request body
         '404':
-          description: Item not found with the given `id`
+          description: Picture not found with the given `id`
         '500':
           description: Internal server error
 
 components:
   schemas:
-    ItemDto:
+    PictureDto:
       type: object
       description: |
-        Represents a Item object, without its unique identifier.
+        Represents a picture object, without its unique identifier.
       required:
         - name
         - stock
@@ -157,7 +157,7 @@ components:
       properties:
         name:
           type: string
-          description: Title of the Item
+          description: Title of the picture
           example: "Sunset over the mountains"
         stock:
           type: integer
@@ -167,16 +167,16 @@ components:
         price:
           type: number
           format: double
-          description: Price of the item. It must NOT have a negative value.
+          description: Price of the picture. It must NOT have a negative value.
           example: 49.99
         description:
           type: string
-          description: Detailed description of the item
+          description: Detailed description of the picture
           example: "A beautiful high-resolution photograph."
-    Item:
+    Picture:
       type: object
       description: |
-        Represents a stored item in the inventory,
+        Represents a stored picture in the inventory,
         including its unique identifier and full details.
       required:
         - id
@@ -187,11 +187,11 @@ components:
       properties:
         id:
           type: integer
-          description: Unique identifier for the item
+          description: Unique identifier for the picture
           example: 1
         name:
           type: string
-          description: Title of the item
+          description: Title of the picture
           example: "Sunset over the mountains"
         stock:
           type: integer
@@ -202,9 +202,9 @@ components:
           type: number
           format: double
           description: |
-            Price of the item. It must NOT have a negative value.
+            Price of the picture. It must NOT have a negative value.
           example: 49.99
         description:
           type: string
-          description: Detailed description of the item
+          description: Detailed description of the picture
           example: "A beautiful high-resolution photograph."
