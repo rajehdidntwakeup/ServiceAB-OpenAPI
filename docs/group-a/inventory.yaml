@@ -2,7 +2,7 @@
 openapi: 3.0.3
 info:
   title: Inventory service API
-  version: 1.0.0
+  version: 2.0.0
   description: |
     The **Inventory Service API** manages items in an inventory system.
     It allows clients or other services to create, update,
