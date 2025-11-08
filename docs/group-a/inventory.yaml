@@ -142,6 +142,41 @@ paths:
           description: Item not found with the given `id`
         '500':
           description: Internal server error
+  /inventory/{id}/itemname/{name}:
+    get:
+      operationId: getItemByIdAndName
+      tags:
+        - Inventory
+      summary: Get a item by unique identifier (`id`) and Name
+      description: |
+        Retrieves a single item by its unique identifier (`id`) and Name.
+        Returns the item object if found.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the item
+          schema:
+            type: integer
+        - name: name
+          in: path
+          required: true
+          description: The name of the item
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item found and returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Missing or invalid `id` parameter
+        '404':
+          description: Item with the given `id` was not found
+        '500':
+          description: Internal server error
 
 components:
   schemas:
