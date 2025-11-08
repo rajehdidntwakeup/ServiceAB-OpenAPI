@@ -177,6 +177,7 @@ components:
       required:
         - id
         - itemId
+        - itemName
         - quantity
         - price
       properties:
@@ -188,6 +189,10 @@ components:
           type: integer
           description: Unique identifier of the item
           example: 1
+        itemName:
+          type: string
+          description: Name of the item
+          example: "Sunset over the mountains"
         quantity:
           type: integer
           description: |
@@ -229,6 +234,7 @@ components:
       description: Represents a single item included in an order.
       required:
         - itemId
+        - itemName
         - quantity
         - price
       properties:
@@ -236,6 +242,10 @@ components:
           type: integer
           description: Unique identifier of the item
           example: 1
+        itemName:
+          type: string
+          description: Name of the item
+          example: "Sunset over the mountains"
         quantity:
           type: integer
           description: |
