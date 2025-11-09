@@ -177,6 +177,50 @@ paths:
           description: Item with the given `id` was not found
         '500':
           description: Internal server error
+    put:
+      operationId: updateItemByIdAndName
+      tags:
+        - Inventory
+      summary: Update an existing item
+      description: |
+        Updates an existing item in the inventory
+        using its unique identifier (`id`) and name.
+        Requires both the path parameter and a valid
+        `ItemDto` in the request body.
+        Returns the updated item.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier `id` of the item to update
+          schema:
+            type: integer
+        - name: name
+          in: path
+          required: true
+          description: The name of the item
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Updated item data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemDto'
+      responses:
+        '200':
+          description: Item successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Invalid request body
+        '404':
+          description: Item not found with the given `id`
+        '500':
+          description: Internal server error
 
 components:
   schemas:
