@@ -194,7 +194,7 @@ components:
           type: string
           description: Title of the Item.
             Name must start with the corresponding service.
-          example: "inventory-a: Sunset over the mountains"
+          example: "inventory-A: Sunset over the mountains"
         stock:
           type: integer
           description: |
@@ -228,7 +228,7 @@ components:
         name:
           type: string
           description: Title of the item
-          example: "inventory-a: Sunset over the mountains"
+          example: "inventory-A: Sunset over the mountains"
         stock:
           type: integer
           description: |
