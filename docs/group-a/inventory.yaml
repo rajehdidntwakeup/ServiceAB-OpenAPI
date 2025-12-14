@@ -177,57 +177,13 @@ paths:
           description: Item with the given `id` was not found
         '500':
           description: Internal server error
-    put:
-      operationId: updateItemByIdAndName
-      tags:
-        - Inventory
-      summary: Update an existing item
-      description: |
-        Updates an existing item in the inventory
-        using its unique identifier (`id`) and name.
-        Requires both the path parameter and a valid
-        `ItemDto` in the request body.
-        Returns the updated item.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The unique identifier `id` of the item to update
-          schema:
-            type: integer
-        - name: name
-          in: path
-          required: true
-          description: The name of the item
-          schema:
-            type: string
-      requestBody:
-        required: true
-        description: Updated item data
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ItemDto'
-      responses:
-        '200':
-          description: Item successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Item'
-        '400':
-          description: Invalid request body
-        '404':
-          description: Item not found with the given `id`
-        '500':
-          description: Internal server error
-
 components:
   schemas:
     ItemDto:
       type: object
       description: |
         Represents a Item object, without its unique identifier.
+        Naming convention is to be considered.
       required:
         - name
         - stock
@@ -236,8 +192,9 @@ components:
       properties:
         name:
           type: string
-          description: Title of the Item
-          example: "Sunset over the mountains"
+          description: Title of the Item.
+            Name must start with the corresponding service.
+          example: "inventory-a: Sunset over the mountains"
         stock:
           type: integer
           description: |
@@ -271,7 +228,7 @@ components:
         name:
           type: string
           description: Title of the item
-          example: "Sunset over the mountains"
+          example: "inventory-a: Sunset over the mountains"
         stock:
           type: integer
           description: |
